@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Entities.Entity
 {
-    public class CurrencyCode:IEntity
+    public class CurrencyCode : IEntity
     {
         [Key]
         public int CurrencyCodeId { get; set; }
-        public string? CurrencyCodeName { get; set; }
+        public enum CurrencyCodeName { TRY, USD, EUR }
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concrete
 {
-    public class EfAccountDal: EfEntityRepositoryBase<Account,PaymentProjectDbContext>, IEntityRepository<Account>
+    public class InMemoryCurencyTypeDal: EfEntityRepositoryBase<CurrencyCode>, IEntityRepository<CurrencyCode>
     {
     }
 }
