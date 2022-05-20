@@ -10,7 +10,6 @@ namespace Entities.Entity
 {
     public class Account:IEntity
     {
-        [Key]
         public int AccountNumber { get; set; }
         public int OwnerId { get; set; }
         public int CurrencyCodeId { get; set; }
