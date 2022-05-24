@@ -8,11 +8,24 @@ using System.Threading.Tasks;
 
 namespace Entities.Entity
 {
+
+    public enum accountype
+    {
+        bireysel,
+        kurumsal,
+    }
+    public enum currencycode
+    {
+        TRY,
+        USD,
+        EUR,
+    }
     public class Account:IEntity
     {
         public int AccountNumber { get; set; }
-        public int OwnerId { get; set; }
-        public int CurrencyCodeId { get; set; }
-        public int AccountTypeId { get; set; }
+        public string OwnerName { get; set; }
+        public int Balance { get; set; }
+        public accountype accountype { get; set; }
+        public currencycode currencycode { get; set; }
     }
 }

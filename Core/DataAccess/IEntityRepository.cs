@@ -11,8 +11,6 @@ namespace Core.DataAccess
     public interface IEntityRepository<T>where T : class,IEntity,new()
     {
         List<T> GetAll();
-        List<T> GetAllById(int id);
-
         T Get(int id);
         void Add (T entity);
         void Update(T entity);

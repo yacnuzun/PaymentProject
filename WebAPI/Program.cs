@@ -11,12 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddControllers();
-builder.Services.AddSingleton<Account>(new Account());
-builder.Services.AddSingleton<IAccountService, AccountManager>();
-builder.Services.AddSingleton<IAccountDal, InMemoryAccountDal>();
+builder.Services.AddTransient<ITransactionDal, InMemoryTransactionDal>();
+builder.Services.AddTransient<ITransactionService, TransactionManager>();
+
+builder.Services.AddTransient<IAccountService, AccountManager>();
+builder.Services.AddTransient<IAccountDal, InMemoryAccountDal>();
 
 var app = builder.Build();
 

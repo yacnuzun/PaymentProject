@@ -10,14 +10,12 @@ namespace DataAccess.Concrete
 {
     public class PaymentProjectDbContext:DbContext
     {
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=PaymentProject;Trusted_Connection=True;");
         }
         public DbSet<Account>? Accounts { get; set; }
-        public DbSet<AccountType>? AccountTypes { get; set; }
-        public DbSet<CurrencyCode>? CurrencyCodes { get; set; }
-        public DbSet<Owner>? Owners { get; set; }
         public DbSet<Transaction>? Transactions { get; set; }
         public DbSet<TransactionType>? TransactionTypes { get; set; }
 

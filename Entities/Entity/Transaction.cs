@@ -8,14 +8,21 @@ using System.Threading.Tasks;
 
 namespace Entities.Entity
 {
+    public enum TransactionTypes
+    {
+        payment,
+        deposit,
+        withdraw
+    }
     public class Transaction:IEntity
     {
         [Key]
         public int TransactionId { get; set; }
-        public int TransactionTypeId { get; set; }
-        public int SenderId { get; set; }
-        public int RecipientId { get; set; }
+        public TransactionTypes TransactionType { get; set; }
+        public int SenderNumber { get; set; }
+        public int RecipientNumber { get; set; }
         public int Amount { get; set; }
+        public DateTime TransactionDate { get; set; }
 
     }
 }

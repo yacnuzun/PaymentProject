@@ -11,5 +11,7 @@ namespace Business.Abstract
     public interface IAccountService
     {
         IDataResult<List<Account>> GetAll();
+        IDataResult<Account> Get(int id);
+        IResult Add(Account account);
     }
 }

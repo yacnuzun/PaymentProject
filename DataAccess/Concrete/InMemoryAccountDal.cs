@@ -11,53 +11,91 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concrete
 {
-    public class InMemoryAccountDal: IAccountDal
+    public class InMemoryAccountDal:CashMemory<Account>,IAccountDal
     {
-        List<Account> _accounts;
 
-        public InMemoryAccountDal(List<Account> accounts)
+
+        private List<Account> CreateAccountTable()
         {
-            _accounts = new List<Account>
+
+            List<Account> _accounts = new List<Account>
             {
-                new Account{AccountNumber = 1,AccountTypeId=1,OwnerId=1,CurrencyCodeId=1},
-                new Account{AccountNumber = 2,AccountTypeId=2,OwnerId=2,CurrencyCodeId=1},
-                new Account{AccountNumber = 3,AccountTypeId=2,OwnerId=1,CurrencyCodeId=1}
+                new Account{AccountNumber = 1,Balance=10,accountype=accountype.bireysel,currencycode=currencycode.TRY,OwnerName="Yalçın"},
+                new Account{AccountNumber = 2,Balance=20,accountype=accountype.bireysel,currencycode=currencycode.USD,OwnerName="Selçuk"},
+                new Account{AccountNumber = 3,Balance=30,accountype=accountype.kurumsal,currencycode=currencycode.EUR,OwnerName="Yalçın A.Ş."}
 
             };
+
+            return EntityListSet(_accounts);
         }
 
+        private bool AccountTableIsNull(List<Account> accounts)
+        {
+            if (EntityListGet() != null)
+            {
+                return false;
+            }
+            return true;
+        }
         public void Add(Account account)
         {
-            _accounts.Add(account);
+            if (AccountTableIsNull(EntityListGet()))
+            {
+
+                CreateAccountTable();
+            }
+            EntityListGet().Add(account);
         }
 
         public void Delete(Account account)
         {
-            var deleteToAccount=_accounts.SingleOrDefault(a=> a.AccountNumber == account.AccountNumber);
-            _accounts.Remove(deleteToAccount);
+            if (AccountTableIsNull(EntityListGet()))
+            {
+
+                CreateAccountTable();
+            }
+            var deleteToAccount = EntityListGet().SingleOrDefault(a=> a.AccountNumber == account.AccountNumber);
+            EntityListGet().Remove(deleteToAccount);
         }
 
         public Account Get(int id)
         {
-            return _accounts.SingleOrDefault(a=>a.AccountNumber==id);
+            if (AccountTableIsNull(EntityListGet()))
+            {
+
+                CreateAccountTable();
+            }
+            return EntityListGet().SingleOrDefault(a=>a.AccountNumber==id);
         }
 
         public List<Account> GetAll()
         {
-            return _accounts.ToList();
+            if (AccountTableIsNull(EntityListGet()))
+            {
+
+                CreateAccountTable();
+            }
+
+            return EntityListGet();
         }
 
-        public List<Account> GetAllById(int id)
-        {
-            return _accounts.Where(a=>a.AccountNumber==id).ToList();
-        }
+        
 
         public void Update(Account account)
         {
-            var accountToUpdate = _accounts.SingleOrDefault(a => a.AccountNumber == account.AccountNumber);
-            accountToUpdate.OwnerId = account.OwnerId;
-            accountToUpdate.AccountTypeId = account.AccountTypeId;
-            accountToUpdate.CurrencyCodeId = account.CurrencyCodeId;
+            if (AccountTableIsNull(EntityListGet()))
+            {
+
+                CreateAccountTable();
+            }
+            var accountToUpdate = EntityListGet().SingleOrDefault(a => a.AccountNumber == account.AccountNumber);
+            accountToUpdate.OwnerName = account.OwnerName;
+            accountToUpdate.currencycode= account.currencycode;
+            accountToUpdate.accountype= account.accountype;
+            accountToUpdate.AccountNumber=account.AccountNumber;
+            accountToUpdate.Balance= account.Balance;
+            EntityListGet().Remove(account);
+            EntityListGet().Add(accountToUpdate);
         }
     }
 }
