@@ -9,12 +9,28 @@ using System.Threading.Tasks;
 
 namespace Core.DataAccess.EntityFramework
 {
-    public class CashMemory<TEntity>
+    public class CashMemoryForTransaction<TEntity>
     {
-        List<TEntity> EntityList;
+        public List<TEntity> EntityList;
+
+
         public List<TEntity> EntityListSet(List<TEntity> entities)
         {
             return EntityList=entities;
+        }
+        public List<TEntity> EntityListGet()
+        {
+            return EntityList;
+        }
+    }
+    public class CashMemoryForAccount<TEntity>
+    {
+        public List<TEntity> EntityList;
+
+
+        public List<TEntity> EntityListSet(List<TEntity> entities)
+        {
+            return EntityList = entities;
         }
         public List<TEntity> EntityListGet()
         {

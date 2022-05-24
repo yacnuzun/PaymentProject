@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Entities;
+using Entities.DTOs;
 using Entities.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -41,6 +42,16 @@ namespace WebAPI.Controllers
         public IActionResult AccountWithDraw(AccountWithDrawDto accountWithDrawDto)
         {
             var result=_transactionService.WithDraw(accountWithDrawDto);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+        [HttpPost("accountWihtPayment")]
+        public IActionResult AccountWithPayment(AccountPaymentDto accountPaymentDto)
+        {
+            var result = _transactionService.Payment(accountPaymentDto);
             if (result.Success)
             {
                 return Ok(result);

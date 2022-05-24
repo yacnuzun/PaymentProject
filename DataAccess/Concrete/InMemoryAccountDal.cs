@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concrete
 {
-    public class InMemoryAccountDal:CashMemory<Account>,IAccountDal
+    public class InMemoryAccountDal:CashMemoryForAccount<Account>,IAccountDal
     {
 
-
+        
         private List<Account> CreateAccountTable()
         {
 
@@ -26,7 +26,8 @@ namespace DataAccess.Concrete
 
             };
 
-            return EntityListSet(_accounts);
+            EntityListSet(_accounts);
+            return EntityList;
         }
 
         private bool AccountTableIsNull(List<Account> accounts)
@@ -44,7 +45,7 @@ namespace DataAccess.Concrete
 
                 CreateAccountTable();
             }
-            EntityListGet().Add(account);
+            EntityList.Add(account);
         }
 
         public void Delete(Account account)
@@ -55,7 +56,7 @@ namespace DataAccess.Concrete
                 CreateAccountTable();
             }
             var deleteToAccount = EntityListGet().SingleOrDefault(a=> a.AccountNumber == account.AccountNumber);
-            EntityListGet().Remove(deleteToAccount);
+            EntityList.Remove(deleteToAccount);
         }
 
         public Account Get(int id)
@@ -65,37 +66,37 @@ namespace DataAccess.Concrete
 
                 CreateAccountTable();
             }
-            return EntityListGet().SingleOrDefault(a=>a.AccountNumber==id);
+            return EntityList.SingleOrDefault(a=>a.AccountNumber==id);
         }
 
         public List<Account> GetAll()
         {
-            if (AccountTableIsNull(EntityListGet()))
+            if (AccountTableIsNull(EntityList))
             {
 
                 CreateAccountTable();
             }
 
-            return EntityListGet();
+            return EntityList;
         }
 
         
 
         public void Update(Account account)
         {
-            if (AccountTableIsNull(EntityListGet()))
+            if (AccountTableIsNull(EntityList))
             {
 
                 CreateAccountTable();
             }
-            var accountToUpdate = EntityListGet().SingleOrDefault(a => a.AccountNumber == account.AccountNumber);
+            var accountToUpdate = EntityList.SingleOrDefault(a => a.AccountNumber == account.AccountNumber);
             accountToUpdate.OwnerName = account.OwnerName;
             accountToUpdate.currencycode= account.currencycode;
             accountToUpdate.accountype= account.accountype;
             accountToUpdate.AccountNumber=account.AccountNumber;
             accountToUpdate.Balance= account.Balance;
-            EntityListGet().Remove(account);
-            EntityListGet().Add(accountToUpdate);
+            EntityList.Remove(account);
+            EntityList.Add(accountToUpdate);
         }
     }
 }

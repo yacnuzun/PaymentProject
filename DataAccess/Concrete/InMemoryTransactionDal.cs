@@ -13,16 +13,16 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concrete
 {
-    public class InMemoryTransactionDal :CashMemory<Transaction>,ITransactionDal
+    public class InMemoryTransactionDal :CashMemoryForTransaction<Transaction>,ITransactionDal
     {
         IAccountDal _accountDal;
-
+        
         public InMemoryTransactionDal(IAccountDal accountDal)
         {
             _accountDal = accountDal;
         }
 
-        public void CreateTransactionTable()
+        public List<Transaction> CreateTransactionTable()
         {
             List<Transaction> _transactions = new List<Transaction>()
             {
@@ -30,10 +30,12 @@ namespace DataAccess.Concrete
                 new Transaction(){TransactionId=2,TransactionDate=DateTime.Parse("5/1/2020"),TransactionType=TransactionTypes.withdraw,SenderNumber=1,RecipientNumber=1,Amount=20}
             };
             EntityListSet(_transactions);
+            return  EntityList;
+            
         }
         public bool TransactionIsNull(List<Transaction> transactions)
         {
-            if (EntityListGet()==null)
+            if (EntityList==null)
             {
                 return true;
             }
@@ -41,16 +43,16 @@ namespace DataAccess.Concrete
         }
         public void Add(Transaction transaction)
         {
-            if (TransactionIsNull(EntityListGet()) == true)
+            if (TransactionIsNull(EntityList) == true)
             {
                 CreateTransactionTable();
             }
-            EntityListGet().Add(transaction);
+            EntityList.Add(transaction);
         }
 
         public void Delete(Transaction transaction)
         {
-            if (TransactionIsNull(EntityListGet()) == true)
+            if (TransactionIsNull(EntityList) == true)
             {
                 CreateTransactionTable();
             }
@@ -59,38 +61,38 @@ namespace DataAccess.Concrete
 
         public Transaction Get(int id)
         {
-            if (TransactionIsNull(EntityListGet()) == true)
+            if (TransactionIsNull(EntityList) == true)
             {
                 CreateTransactionTable();
             }
-            return EntityListGet().Where(t=>t.TransactionId == id).SingleOrDefault();
+            return EntityList.Where(t=>t.TransactionId == id).SingleOrDefault();
         }
 
         public List<Transaction> GetAll()
         {
-            if (TransactionIsNull(EntityListGet()) ==true)
+            if (TransactionIsNull(EntityList) ==true)
             {
                 CreateTransactionTable();
             }
-            return EntityListGet().ToList();
+            return EntityList;
         }
 
         public List<Transaction> GetAllByOwnerId(int id)
         {
-            if (TransactionIsNull(EntityListGet()) == true)
+            if (TransactionIsNull(EntityList) == true)
             {
                 CreateTransactionTable();
             }
-            return EntityListGet().Where(t=>t.RecipientNumber == id || t.SenderNumber==id).ToList();
+            return EntityList.Where(t=>t.RecipientNumber == id || t.SenderNumber==id).ToList();
         }
 
         public void Update(int id)
         {
-            if (TransactionIsNull(EntityListGet()) == true)
+            if (TransactionIsNull(EntityList) == true)
             {
                 CreateTransactionTable();
             }
-            var payment= EntityListGet().Where(t=>t.RecipientNumber==id).FirstOrDefault();
+            var payment= EntityList.Where(t=>t.RecipientNumber==id).FirstOrDefault();
 
         }
 
@@ -103,8 +105,8 @@ namespace DataAccess.Concrete
         public void Payment(AccountPaymentDto accountPaymentDto)
         {
             Transaction transaction = new Transaction();
-
-            if (TransactionIsNull(EntityListGet()) == true)
+            Account account = new Account();
+            if (TransactionIsNull(EntityList) == true)
             {
                 CreateTransactionTable();
             }
@@ -113,14 +115,19 @@ namespace DataAccess.Concrete
             transaction.SenderNumber = accountPaymentDto.SenderNumber;
             transaction.Amount = accountPaymentDto.Amount;
             transaction.TransactionDate= DateTime.Now;
-            EntityListGet().Add(transaction);
+            EntityList.Add(transaction);
+            List<Account> accountList=_accountDal.GetAll();
+            account.Balance=accountList.Where(a=>a.AccountNumber==accountPaymentDto.SenderNumber).FirstOrDefault().Balance;
+            account.AccountNumber = accountPaymentDto.SenderNumber;
+            account.Balance = account.Balance - accountPaymentDto.Amount;
+            _accountDal.Update(account);
         }
 
         public void WithDraw(AccountWithDrawDto accountWithDrawDto)
         {
             Transaction transaction = new Transaction();
             Account account = new Account();
-            if (TransactionIsNull(EntityListGet()) == true)
+            if (TransactionIsNull(EntityList) == true)
             {
                 CreateTransactionTable();
             }
@@ -129,14 +136,30 @@ namespace DataAccess.Concrete
             transaction.SenderNumber = accountWithDrawDto.OwnerNumber;
             transaction.Amount = accountWithDrawDto.Amount;
             transaction.TransactionDate = DateTime.Now;
-            EntityListGet().Add(transaction);
+            EntityList.Add(transaction);
+            _accountDal.GetAll();
             account.AccountNumber = accountWithDrawDto.OwnerNumber;
             account.Balance = account.Balance - accountWithDrawDto.Amount;
             _accountDal.Update(account);
         }
         public void Deposit(AccountWithDepositDto accountWithDepositDto)
         {
-
+            Transaction transaction = new Transaction();
+            Account account = new Account();
+            if (TransactionIsNull(EntityList) == true)
+            {
+                CreateTransactionTable();
+            }
+            transaction.TransactionType = TransactionTypes.withdraw;
+            transaction.RecipientNumber = accountWithDepositDto.OwnerNumber;
+            transaction.SenderNumber = accountWithDepositDto.OwnerNumber;
+            transaction.Amount = accountWithDepositDto.Amount;
+            transaction.TransactionDate = DateTime.Now;
+            EntityList.Add(transaction);
+            _accountDal.GetAll();
+            account.AccountNumber = accountWithDepositDto.OwnerNumber;
+            account.Balance = account.Balance + accountWithDepositDto.Amount;
+            _accountDal.Update(account);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Core.Utilities.Results;
 using Entities;
+using Entities.DTOs;
 using Entities.Entity;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace Business.Abstract
     {
         IDataResult<List<Transaction>> GetAll();
         IDataResult<List<Transaction>> GetAllByOwnerId(int id);
-        IResult Payment(Transaction transaction);
+        IResult Payment(AccountPaymentDto accountPaymentDto);
         IResult Deposit(Transaction transaction);
         IResult WithDraw(AccountWithDrawDto accountWithDrawDto);
     }
