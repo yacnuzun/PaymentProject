@@ -2,6 +2,7 @@
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities;
+using Entities.DTOs;
 using Entities.Entity;
 using System;
 using System.Collections.Generic;
@@ -35,9 +36,10 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Transaction>>(_transactionDal.GetAllByOwnerId(id));
         }
 
-        public IResult Payment(Transaction transaction)
+        public IResult Payment(AccountPaymentDto accountPaymentDto)
         {
-            throw new NotImplementedException();
+            _transactionDal.Payment(accountPaymentDto);
+            return new SuccessResult("Success");
         }
 
         public IResult WithDraw(AccountWithDrawDto accountWithTransactionDto)

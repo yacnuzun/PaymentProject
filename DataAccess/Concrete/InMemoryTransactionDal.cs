@@ -121,6 +121,10 @@ namespace DataAccess.Concrete
             account.AccountNumber = accountPaymentDto.SenderNumber;
             account.Balance = account.Balance - accountPaymentDto.Amount;
             _accountDal.Update(account);
+            account.Balance = accountList.Where(a => a.AccountNumber == accountPaymentDto.RecipientNumber).FirstOrDefault().Balance;
+            account.AccountNumber = accountPaymentDto.RecipientNumber;
+            account.Balance = account.Balance + accountPaymentDto.Amount;
+            _accountDal.Update(account);
         }
 
         public void WithDraw(AccountWithDrawDto accountWithDrawDto)
